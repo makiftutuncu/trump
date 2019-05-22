@@ -6,7 +6,6 @@ import scala.util.Random
 import com.github.makiftutuncu.trump.domain.{Tweet, TweetRepository}
 
 class TweetRepositoryInMemory(implicit val ec: ExecutionContext) extends TweetRepository {
-
   override def searchByUserName(username: String, limit: Int): Future[Seq[Tweet]] = Future {
     Random.shuffle(tweets).take(limit)
   }
@@ -150,5 +149,4 @@ class TweetRepositoryInMemory(implicit val ec: ExecutionContext) extends TweetRe
     "A witty saying proves nothing."
   ).map(Tweet.apply)
   // scalastyle:on
-
 }

@@ -9,14 +9,14 @@ class LimitValidatorSpec extends PropSpec with GeneratorDrivenPropertyChecks wit
 
   property("Validation result must be empty for valid limits") {
     forAll(validLimitGenerator -> "limit") { limit: Int =>
-      LimitValidator.validate(limit) must be(empty)
+      LimitValidator.validate(limit) must be(None)
     }
   }
 
   property("Validation result must have errors for invalid limits") {
     forAll("limit") { limit: Int =>
       whenever(limit < LimitValidator.minLimit || limit > LimitValidator.maxLimit) {
-        LimitValidator.validate(limit) must be(List(Errors.invalidLimit(limit)))
+        LimitValidator.validate(limit) must be(Some(Errors.invalidLimit(limit)))
       }
     }
   }

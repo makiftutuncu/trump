@@ -4,10 +4,10 @@ object LimitValidator extends Validator[Int] {
   val minLimit: Int = 1
   val maxLimit: Int = 10
 
-  override def validate(limit: Int): List[ShoutError] =
+  override def validate(limit: Int): Option[ShoutError] =
     if (limit < minLimit || limit > maxLimit) {
-      List(Errors.invalidLimit(limit))
+      Some(Errors.invalidLimit(limit))
     } else {
-      List.empty
+      None
     }
 }

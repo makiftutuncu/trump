@@ -9,4 +9,11 @@ object Errors {
       "invalid-limit",
       s"Limit $n is invalid. It must be between 1 and 10."
     )
+
+  val unknown: ShoutError =
+    ShoutError(
+      StatusCodes.InternalServerError.intValue,
+      "unknown",
+      "An unknown error has occurred!"
+    )
 }
