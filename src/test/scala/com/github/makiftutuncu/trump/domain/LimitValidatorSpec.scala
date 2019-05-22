@@ -1,17 +1,23 @@
 package com.github.makiftutuncu.trump.domain
 
-import org.scalacheck.Prop.{BooleanOperators, forAll}
-import org.scalacheck.{Gen, Properties}
+import org.scalacheck.Gen
+import org.scalatest.{MustMatchers, PropSpec}
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class LimitValidatorSpec extends Properties("LimitValidator") {
+class LimitValidatorSpec extends PropSpec with GeneratorDrivenPropertyChecks with MustMatchers {
   private val validLimitGenerator = Gen.choose(LimitValidator.minLimit, LimitValidator.maxLimit)
 
-  property("validLimits") = forAll(validLimitGenerator) { limit: Int =>
-    LimitValidator.validate(limit).isEmpty :| s"$limit is not a valid limit"
+  property("Validation result must be empty for valid limits") {
+    forAll(validLimitGenerator -> "limit") { limit: Int =>
+      LimitValidator.validate(limit) must be(empty)
+    }
   }
 
-  property("invalidLimits") = forAll { limit: Int =>
-    (limit < LimitValidator.minLimit || limit > LimitValidator.maxLimit) ==>
-      LimitValidator.validate(limit).nonEmpty :| s"$limit is a valid limit"
+  property("Validation result must have errors for invalid limits") {
+    forAll("limit") { limit: Int =>
+      whenever(limit < LimitValidator.minLimit || limit > LimitValidator.maxLimit) {
+        LimitValidator.validate(limit) must be(List(Errors.invalidLimit(limit)))
+      }
+    }
   }
 }
