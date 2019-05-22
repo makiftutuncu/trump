@@ -1,17 +1,17 @@
 package com.github.makiftutuncu.trump.infrastructure
 
+import com.github.makiftutuncu.trump.domain.{ShoutError, Tweet, TweetRepository}
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
-import com.github.makiftutuncu.trump.domain.{Tweet, TweetRepository}
-
 class TweetRepositoryInMemory(implicit val ec: ExecutionContext) extends TweetRepository {
-  override def searchByUserName(username: String, limit: Int): Future[Seq[Tweet]] = Future {
-    Random.shuffle(tweets).take(limit)
+  override def getTweets(username: String, limit: Int): Future[Either[ShoutError, List[Tweet]]] = Future {
+    Right(Random.shuffle(tweets).take(limit))
   }
 
   // scalastyle:off
-  private val tweets: Seq[Tweet] = Seq(
+  private val tweets: List[Tweet] = List(
     "I am not very skeptical… a good deal of skepticism in a scientific man is advisable to avoid much loss of time, but I have met not a few men, who… have often thus been deterred from experiments or observations which would have proven servicable.",
     "I know that most men, including those at ease with problems of the greatest complexity, can seldom accept even the simplest and most obvious truth if it be such as would oblige them to admit the falsity of conclusions which they have delighted in explaining to colleagues, which they have proudly taught to others, and which they have woven, thread by thread, into the fabric of their lives.",
     "When even the brightest mind in our world has been trained up from childhood in a superstition of any kind, it will never be possible for that mind, in its maturity, to examine sincerely, dispassionately, and conscientiously any evidence or any circumstance which shall seem to cast a doubt upon the validity of that superstition. I doubt if I could do it myself.",

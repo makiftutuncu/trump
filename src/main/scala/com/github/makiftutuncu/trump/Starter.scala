@@ -1,19 +1,20 @@
 package com.github.makiftutuncu.trump
 
-import scala.concurrent.{Await, ExecutionContext}
-import scala.concurrent.duration.Duration
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.github.makiftutuncu.trump.application.ShoutController
-import com.github.makiftutuncu.trump.infrastructure.TweetRepositoryInMemory
+import com.github.makiftutuncu.trump.infrastructure.TwitterApi
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
 object Starter {
   implicit val actorSystem: ActorSystem           = ActorSystem()
-  implicit val materializer: ActorMaterializer    = ActorMaterializer()(actorSystem)
   implicit val executionContext: ExecutionContext = ExecutionContext.global
+  implicit val materializer: ActorMaterializer    = ActorMaterializer()(actorSystem)
 
-  val tweetRepository = new TweetRepositoryInMemory()
+  val tweetRepository = new TwitterApi()
   val shoutController = new ShoutController(tweetRepository)
 
   def main(args: Array[String]): Unit =

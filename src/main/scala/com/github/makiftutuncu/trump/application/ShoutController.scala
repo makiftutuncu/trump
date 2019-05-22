@@ -34,10 +34,10 @@ class ShoutController(val tweetRepository: TweetRepository)(implicit as: ActorSy
         failWithError(error)
 
       case None =>
-        val tweets = tweetRepository.searchByUserName(twitterUserName, limit)
-        val result = tweets.map(_.asJson)
-
-        complete(result)
+        onSuccess(tweetRepository.getTweets(twitterUserName, limit)) {
+          case Left(error)   => failWithError(error)
+          case Right(tweets) => complete(tweets.map(_.asJson))
+        }
     }
 
   private def failWithError(error: ShoutError): Route =

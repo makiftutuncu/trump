@@ -16,4 +16,11 @@ object Errors {
       "unknown",
       "An unknown error has occurred!"
     )
+
+  def twitterConnection(details: String): ShoutError =
+    ShoutError(
+      StatusCodes.ServiceUnavailable.intValue,
+      "twitter-connection",
+      details
+    )
 }
