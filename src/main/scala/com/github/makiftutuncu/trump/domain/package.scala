@@ -11,9 +11,9 @@ package object domain {
     def value[A](a: A): Maybe[A]          = Right(a)
 
     implicit class EitherExtensions[L, R](either: Either[L, R]) {
-      def failWith(toError: L => ShoutError): Maybe[R] =
+      def failWith(error: ShoutError): Maybe[R] =
         either match {
-          case Left(l)  => Maybe.error(toError(l))
+          case Left(_)  => Maybe.error(error)
           case Right(r) => Maybe.value(r)
         }
     }

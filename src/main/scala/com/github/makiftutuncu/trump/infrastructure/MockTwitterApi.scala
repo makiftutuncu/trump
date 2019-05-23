@@ -1,12 +1,16 @@
 package com.github.makiftutuncu.trump.infrastructure
 
 import com.github.makiftutuncu.trump.domain.{MaybeF, Tweet, TweetRepository}
+import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-class MockTwitterApi(implicit val ec: ExecutionContext) extends TweetRepository {
-  override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = MaybeF.value(Random.shuffle(tweets).take(limit))
+class MockTwitterApi(implicit val ec: ExecutionContext) extends TweetRepository with StrictLogging {
+  override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
+    logger.debug(s"Getting $limit random quotes as tweets for user $username")
+    MaybeF.value(Random.shuffle(tweets).take(limit))
+  }
 
   // scalastyle:off
   private val tweets: List[Tweet] = List(

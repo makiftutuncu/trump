@@ -2,7 +2,9 @@ package com.github.makiftutuncu.trump.domain
 
 import io.circe.Encoder
 
-case class ShoutError(code: Int, error: String, details: Option[String])
+case class ShoutError(code: Int, error: String, details: Option[String]) {
+  override def toString: String = s"$error${details.fold("")(d => s": $d")}"
+}
 
 object ShoutError {
   implicit val shoutErrorEncoder: Encoder[ShoutError] =

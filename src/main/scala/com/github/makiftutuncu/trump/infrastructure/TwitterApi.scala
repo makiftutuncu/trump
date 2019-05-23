@@ -10,13 +10,20 @@ import akka.stream.Materializer
 import com.github.makiftutuncu.trump.Config.Twitter
 import com.github.makiftutuncu.trump.domain.Maybe.EitherExtensions
 import com.github.makiftutuncu.trump.domain._
+import com.typesafe.scalalogging.StrictLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.{Decoder, Json}
 
 import scala.concurrent.ExecutionContext
 
-class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer) extends TweetRepository with FailFastCirceSupport {
+class TwitterApi(val config: Twitter)(implicit as: ActorSystem,
+                                               ec: ExecutionContext,
+                                               m: Materializer) extends TweetRepository
+                                                                   with FailFastCirceSupport
+                                                                   with StrictLogging {
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
+    logger.debug(s"Going to try and get $limit tweets of user $username")
+
     getAccessToken.flatMap {
       case Left(error) =>
         MaybeF.error(error)
@@ -34,6 +41,7 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionCon
           for {
             httpResponse <- Http().singleRequest(request)
             json         <- Unmarshal(httpResponse).to[Json]
+            _             = logger.debug(s"Got tweets response\n${json.noSpaces}")
             tweets       <- MaybeF.maybe(parseTweets(json))
           } yield {
             tweets
@@ -41,12 +49,15 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionCon
 
         result.recover {
           case t: Throwable =>
-            Maybe.error(Errors.twitterConnection(s"Cannot get tweets! ${t.getMessage}"))
+            logger.error(s"Failed to get tweets of user $username", t)
+            Maybe.error(Errors.twitterConnection("Cannot get tweets!"))
         }
     }
   }
 
   private def getAccessToken: MaybeF[String] = {
+    logger.debug("Going to get an access token")
+
     val request =
       HttpRequest()
         .withMethod(HttpMethods.POST)
@@ -58,6 +69,7 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionCon
       for {
         httpResponse <- Http().singleRequest(request)
         json         <- Unmarshal(httpResponse).to[Json]
+        _             = logger.debug(s"Got access token response\n${json.noSpaces}")
         maybeToken   <- MaybeF.maybe(parse[String](json, "access_token", "Cannot parse access token!"))
       } yield {
         maybeToken
@@ -65,15 +77,22 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionCon
 
     result.recover {
       case t: Throwable =>
-        Maybe.error(Errors.twitterConnection(s"Cannot get access token! ${t.getMessage}"))
+        logger.error("Failed to get access token", t)
+        Maybe.error(Errors.twitterConnection("Cannot get access token!"))
     }
   }
 
   private def parseTweets(json: Json): Maybe[List[Tweet]] =
     parse[List[Json]](json, "statuses", "Cannot parse tweets!").flatMap { statuses =>
       statuses.foldLeft(Maybe.value(List.empty[Tweet])) {
-        case (error @ Left(_), _)    => error
-        case (Right(tweets), status) => parse[String](status, "text", "Cannot parse tweets!").map(t => tweets :+ Tweet(t))
+        case (error @ Left(_), _) =>
+          error
+
+        case (Right(tweets), status) =>
+          parse[String](status, "text", "Cannot parse tweets!").map { text =>
+            logger.debug(s"Parsed tweet: $text")
+            tweets :+ Tweet(text)
+          }
       }
     }
 
@@ -81,5 +100,5 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionCon
     json
       .hcursor
       .get[A](key)
-      .failWith(df => Errors.twitterConnection(s"$error ${df.getMessage}"))
+      .failWith(Errors.twitterConnection(error))
 }
