@@ -7,47 +7,48 @@ import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OA
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, Uri}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
-import com.github.makiftutuncu.trump.domain.{Errors, ShoutError, Tweet, TweetRepository}
+import com.github.makiftutuncu.trump.domain.Maybe.EitherExtensions
+import com.github.makiftutuncu.trump.domain._
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import io.circe.Json
+import io.circe.{Decoder, Json}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TwitterApi(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer) extends TweetRepository with FailFastCirceSupport {
   val consumerAPIKey       = ""
   val consumerAPISecretKey = ""
 
-  override def getTweets(username: String, limit: Int): Future[Either[ShoutError, List[Tweet]]] = {
+  override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
     getAccessToken.flatMap {
       case Left(error) =>
-        Future.successful(Left(error))
+        MaybeF.error(error)
 
       case Right(accessToken) =>
-        val uri = Uri("https://api.twitter.com/1.1/search/tweets.json").withQuery(Query(Map("q" -> s"from:$username", "result_type" -> "recent", "count" -> limit.toString)))
+        val parameters = Map("q" -> s"from:$username", "result_type" -> "recent", "count" -> limit.toString)
 
         val request =
           HttpRequest()
             .withMethod(HttpMethods.GET)
-            .withUri(uri)
+            .withUri(Uri("https://api.twitter.com/1.1/search/tweets.json").withQuery(Query(parameters)))
             .withHeaders(Authorization(OAuth2BearerToken(accessToken)))
 
         val result =
           for {
             httpResponse <- Http().singleRequest(request)
             json         <- Unmarshal(httpResponse).to[Json]
-            tweets       <- Future.successful(parseTweets(json))
+            tweets       <- MaybeF.maybe(parseTweets(json))
           } yield {
             tweets
           }
 
         result.recover {
           case t: Throwable =>
-            Left(Errors.twitterConnection(s"Cannot get tweets! ${t.getMessage}"))
+            Maybe.error(Errors.twitterConnection(s"Cannot get tweets! ${t.getMessage}"))
         }
     }
   }
 
-  private def getAccessToken: Future[Either[ShoutError, String]] = {
+  private def getAccessToken: MaybeF[String] = {
     val request =
       HttpRequest()
         .withMethod(HttpMethods.POST)
@@ -59,32 +60,28 @@ class TwitterApi(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer
       for {
         httpResponse <- Http().singleRequest(request)
         json         <- Unmarshal(httpResponse).to[Json]
-        maybeToken   <- Future.successful(json.hcursor.downField("access_token").as[String])
+        maybeToken   <- MaybeF.maybe(parse[String](json, "access_token", "Cannot parse access token!"))
       } yield {
-        maybeToken.fold(df => Left(Errors.twitterConnection(s"Cannot parse access token! ${df.getMessage()}")), at => Right(at))
+        maybeToken
       }
 
     result.recover {
       case t: Throwable =>
-        Left(Errors.twitterConnection(s"Cannot get access token! ${t.getMessage}"))
+        Maybe.error(Errors.twitterConnection(s"Cannot get access token! ${t.getMessage}"))
     }
   }
 
-  private def parseTweets(json: Json): Either[ShoutError, List[Tweet]] =
-    json.hcursor.downField("statuses").as[List[Json]] match {
-      case Left(decodingFailure) =>
-        Left(Errors.twitterConnection(s"Cannot parse tweets! ${decodingFailure.getMessage}"))
-
-      case Right(statuses) =>
-        statuses.foldLeft[Either[ShoutError, List[Tweet]]](Right(List.empty)) {
-          case (error @ Left(_), _) =>
-            error
-
-          case (Right(tweets), status) =>
-            status.hcursor.downField("text").as[String] match {
-              case Left(decodingFailure) => Left(Errors.twitterConnection(s"Cannot parse tweets! ${decodingFailure.getMessage}"))
-              case Right(text)           => Right(tweets :+ Tweet(text))
-            }
-        }
+  private def parseTweets(json: Json): Maybe[List[Tweet]] =
+    parse[List[Json]](json, "statuses", "Cannot parse tweets!").flatMap { statuses =>
+      statuses.foldLeft(Maybe.value(List.empty[Tweet])) {
+        case (error @ Left(_), _)    => error
+        case (Right(tweets), status) => parse[String](status, "text", "Cannot parse tweets!").map(t => tweets :+ Tweet(t))
+      }
     }
+
+  private def parse[A: Decoder](json: Json, key: String, error: String): Maybe[A] =
+    json
+      .hcursor
+      .get[A](key)
+      .failWith(df => Errors.twitterConnection(s"$error ${df.getMessage}"))
 }
