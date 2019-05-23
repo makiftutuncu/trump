@@ -7,6 +7,7 @@ import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OA
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, Uri}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
+import com.github.makiftutuncu.trump.Config.Twitter
 import com.github.makiftutuncu.trump.domain.Maybe.EitherExtensions
 import com.github.makiftutuncu.trump.domain._
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
@@ -14,10 +15,7 @@ import io.circe.{Decoder, Json}
 
 import scala.concurrent.ExecutionContext
 
-class TwitterApi(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer) extends TweetRepository with FailFastCirceSupport {
-  val consumerAPIKey       = ""
-  val consumerAPISecretKey = ""
-
+class TwitterApi(val config: Twitter)(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer) extends TweetRepository with FailFastCirceSupport {
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
     getAccessToken.flatMap {
       case Left(error) =>
@@ -53,7 +51,7 @@ class TwitterApi(implicit as: ActorSystem, ec: ExecutionContext, m: Materializer
       HttpRequest()
         .withMethod(HttpMethods.POST)
         .withUri(Uri("https://api.twitter.com/oauth2/token"))
-        .withHeaders(Authorization(BasicHttpCredentials(consumerAPIKey, consumerAPISecretKey)))
+        .withHeaders(Authorization(BasicHttpCredentials(config.apiKey, config.apiSecret)))
         .withEntity(FormData(Map("grant_type" -> "client_credentials")).toEntity)
 
     val result =

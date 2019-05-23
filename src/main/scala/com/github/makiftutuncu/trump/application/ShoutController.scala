@@ -12,7 +12,9 @@ import io.circe.syntax._
 
 import scala.concurrent.ExecutionContext
 
-class ShoutController(val tweetRepository: TweetRepository)(implicit as: ActorSystem, ec: ExecutionContext) extends FailFastCirceSupport {
+class ShoutController(val limitValidator: LimitValidator,
+                      val tweetRepository: TweetRepository)(implicit as: ActorSystem,
+                                                                     ec: ExecutionContext) extends FailFastCirceSupport {
   private val errorHandler =
     ExceptionHandler {
       case _ => failWithError(Errors.unknown)
@@ -29,7 +31,7 @@ class ShoutController(val tweetRepository: TweetRepository)(implicit as: ActorSy
   }
 
   private def shoutForUser(twitterUserName: String, limit: Int): Route =
-    LimitValidator.validate(limit) match {
+    limitValidator.validate(limit) match {
       case Some(error) =>
         failWithError(error)
 

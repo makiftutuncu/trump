@@ -5,7 +5,7 @@ import com.github.makiftutuncu.trump.domain.{MaybeF, Tweet, TweetRepository}
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-class TweetRepositoryInMemory(implicit val ec: ExecutionContext) extends TweetRepository {
+class MockTwitterApi(implicit val ec: ExecutionContext) extends TweetRepository {
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = MaybeF.value(Random.shuffle(tweets).take(limit))
 
   // scalastyle:off
