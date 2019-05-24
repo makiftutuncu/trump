@@ -1,4 +1,4 @@
-package com.github.makiftutuncu.trump.infrastructure
+package com.github.makiftutuncu.scalacandidatetest.infrastructure
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -7,9 +7,10 @@ import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OA
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, Uri}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
-import com.github.makiftutuncu.trump.Config.Twitter
-import com.github.makiftutuncu.trump.domain.Maybe.EitherExtensions
-import com.github.makiftutuncu.trump.domain._
+import com.github.makiftutuncu.scalacandidatetest.Config.Twitter
+import com.github.makiftutuncu.scalacandidatetest.domain._
+import com.github.makiftutuncu.scalacandidatetest.domain.models.Maybe.EitherExtensions
+import com.github.makiftutuncu.scalacandidatetest.domain.models.{Errors, Maybe, MaybeF, Tweet}
 import com.typesafe.scalalogging.StrictLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.{Decoder, Json}

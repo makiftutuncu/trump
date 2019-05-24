@@ -27,7 +27,7 @@ In order to get you started, we've provided some bootstrap code.
 - `TweetRepository` and `TweetRepositoryInMemory`: We want you to work on domain code. Therefore, we provide an in-memory implementation of the Twitter repository that returns random quotes about science 🧐. You don't need to implement real communication with Twitter, you can use `TwitterRepositoryInMemory` as a production implementation.
 - `Tweet` domain model: Simple case class for modeling Tweets returned by `TweetRepository`.
 
-You can run the webserver by running `runMain com.github.makiftutuncu.trump.Starter` inside the sbt console. By default it runs on port 9000.
+You can run the webserver by running `runMain com.github.makiftutuncu.scalacandidatetest.Starter` inside the sbt console. By default it runs on port 9000.
 
 ![hello-world](/doc/img/helloworld.png)
 

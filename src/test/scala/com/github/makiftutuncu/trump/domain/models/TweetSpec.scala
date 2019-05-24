@@ -1,4 +1,4 @@
-package com.github.makiftutuncu.trump.domain
+package com.github.makiftutuncu.scalacandidatetest.domain.models
 
 import org.scalatest.{MustMatchers, WordSpec}
 

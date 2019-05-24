@@ -1,9 +1,10 @@
-package com.github.makiftutuncu.trump
+package com.github.makiftutuncu.scalacandidatetest
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.github.makiftutuncu.trump.domain.{Cache, LimitValidator, ShoutService, Tweet, TweetRepository}
-import com.github.makiftutuncu.trump.infrastructure.{MockTwitterApi, Redis, TwitterApi}
+import com.github.makiftutuncu.scalacandidatetest.domain.models.Tweet
+import com.github.makiftutuncu.scalacandidatetest.domain.{Cache, TweetRepository}
+import com.github.makiftutuncu.scalacandidatetest.infrastructure._
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 

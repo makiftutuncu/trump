@@ -25,8 +25,6 @@ libraryDependencies ++= Seq(
 )
 
 addCommandAlias("c", "compile")
-addCommandAlias("s", "scalastyle")
 addCommandAlias("tc", "test:compile")
-addCommandAlias("ts", "test:scalastyle")
 addCommandAlias("t", "test")
 addCommandAlias("to", "testOnly")

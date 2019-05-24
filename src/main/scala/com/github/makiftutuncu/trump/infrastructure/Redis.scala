@@ -1,7 +1,8 @@
-package com.github.makiftutuncu.trump.infrastructure
+package com.github.makiftutuncu.scalacandidatetest.infrastructure
 
-import com.github.makiftutuncu.trump.Config
-import com.github.makiftutuncu.trump.domain.{Cache, MaybeF, Tweet}
+import com.github.makiftutuncu.scalacandidatetest.Config.{Cache => CacheConfig}
+import com.github.makiftutuncu.scalacandidatetest.domain.Cache
+import com.github.makiftutuncu.scalacandidatetest.domain.models.{MaybeF, Tweet}
 import com.redis.serialization.Parse
 import com.redis.{RedisClient, Seconds}
 import com.typesafe.scalalogging.StrictLogging
@@ -11,7 +12,7 @@ import io.circe.{Encoder, Json}
 
 import scala.concurrent.ExecutionContext
 
-class Redis[A](val config: Config.Cache,
+class Redis[A](val config: CacheConfig,
                val redis: RedisClient)(implicit ec: ExecutionContext, p: Parse[A]) extends Cache[A] with StrictLogging {
   override val defaultTTLInSeconds: Int = config.ttl
 

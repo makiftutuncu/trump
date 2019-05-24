@@ -1,6 +1,6 @@
-package com.github.makiftutuncu.trump
+package com.github.makiftutuncu.scalacandidatetest
 
-import com.github.makiftutuncu.trump.Config.{Cache, Limits, Server, Twitter}
+import com.github.makiftutuncu.scalacandidatetest.Config.{Cache, Limits, Server, Twitter}
 import com.typesafe.config.{Config => TypesafeConfig}
 
 case class Config(cache: Cache, limits: Limits, server: Server, twitter: Twitter)

@@ -1,9 +1,9 @@
-package com.github.makiftutuncu.trump.application
+package com.github.makiftutuncu.scalacandidatetest.application
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.server.Directives.{complete, get, handleExceptions, path, _}
+import akka.http.scaladsl.server.Directives.{get, handleExceptions, path, _}
 import akka.http.scaladsl.server.Route
-import com.github.makiftutuncu.trump.domain._
+import com.github.makiftutuncu.scalacandidatetest.infrastructure.ShoutService
 
 import scala.concurrent.ExecutionContext
 
@@ -13,10 +13,7 @@ class ShoutController(val shoutService: ShoutService)(implicit as: ActorSystem, 
       path("shout" / Segment) { twitterUserName =>
         handleExceptions(errorHandler) {
           parameters("limit".as[Int]) { limit =>
-            onSuccess(shoutService.shoutForUser(twitterUserName, limit)) {
-              case Left(error)   => failWithError(error)
-              case Right(result) => complete(result)
-            }
+            respond(shoutService.shoutForUser(twitterUserName, limit))
           }
         }
       }

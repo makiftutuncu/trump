@@ -1,5 +1,6 @@
-package com.github.makiftutuncu.trump.domain
+package com.github.makiftutuncu.scalacandidatetest.domain
 
+import com.github.makiftutuncu.scalacandidatetest.domain.models.MaybeF
 import io.circe.{Encoder, Json}
 
 trait Cache[A] {

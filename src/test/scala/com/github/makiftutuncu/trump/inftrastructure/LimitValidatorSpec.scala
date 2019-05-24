@@ -1,6 +1,8 @@
-package com.github.makiftutuncu.trump.domain
+package com.github.makiftutuncu.scalacandidatetest.inftrastructure
 
-import com.github.makiftutuncu.trump.Config.Limits
+import com.github.makiftutuncu.scalacandidatetest.Config.Limits
+import com.github.makiftutuncu.scalacandidatetest.domain.models.Errors
+import com.github.makiftutuncu.scalacandidatetest.infrastructure.LimitValidator
 import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, PropSpec}

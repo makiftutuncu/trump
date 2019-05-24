@@ -1,8 +1,8 @@
-package com.github.makiftutuncu.trump
+package com.github.makiftutuncu.scalacandidatetest.domain
 
 import scala.concurrent.{ExecutionContext, Future}
 
-package object domain {
+package object models {
   type Maybe[A]  = Either[ShoutError, A]
   type MaybeF[A] = Future[Maybe[A]]
 

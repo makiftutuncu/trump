@@ -1,6 +1,6 @@
-package com.github.makiftutuncu.trump.domain
+package com.github.makiftutuncu.scalacandidatetest.inftrastructure
 
-import com.github.makiftutuncu.trump.Components
+import com.github.makiftutuncu.scalacandidatetest.Components
 import org.scalatest.{MustMatchers, WordSpec}
 
 class TweetRepositorySpec extends WordSpec with MustMatchers with Components {

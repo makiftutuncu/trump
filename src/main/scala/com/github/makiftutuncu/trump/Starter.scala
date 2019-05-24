@@ -1,7 +1,7 @@
-package com.github.makiftutuncu.trump
+package com.github.makiftutuncu.scalacandidatetest
 
 import akka.http.scaladsl.Http
-import com.github.makiftutuncu.trump.application.ShoutController
+import com.github.makiftutuncu.scalacandidatetest.application.ShoutController
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.Await
