@@ -8,7 +8,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object Starter extends Components with StrictLogging {
-  val shoutController = new ShoutController(tweetCache, limitValidator, tweetRepository)
+  val shoutController = new ShoutController(shoutService)
 
   def main(args: Array[String]): Unit = {
     val server = Http().bindAndHandle(shoutController.route, config.server.host, config.server.port)

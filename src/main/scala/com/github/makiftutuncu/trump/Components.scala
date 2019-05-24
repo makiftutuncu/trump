@@ -2,7 +2,7 @@ package com.github.makiftutuncu.trump
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.github.makiftutuncu.trump.domain.{Cache, LimitValidator, Tweet, TweetRepository}
+import com.github.makiftutuncu.trump.domain.{Cache, LimitValidator, ShoutService, Tweet, TweetRepository}
 import com.github.makiftutuncu.trump.infrastructure.{MockTwitterApi, Redis, TwitterApi}
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
@@ -29,4 +29,6 @@ trait Components {
     } else {
       new TwitterApi(accessTokenCache, config.twitter)
     }
+
+  lazy val shoutService: ShoutService = new ShoutService(tweetCache, limitValidator, tweetRepository)
 }
