@@ -5,6 +5,8 @@
     </encoder>
   </appender>
 
+  <logger name="com.redis.RedisClient" level="OFF" />
+
   <root level="DEBUG">
     <appender-ref ref="STDOUT" />
   </root>

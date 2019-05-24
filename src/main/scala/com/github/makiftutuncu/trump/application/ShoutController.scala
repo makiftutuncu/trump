@@ -3,12 +3,13 @@ package com.github.makiftutuncu.trump.application
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives.{complete, get, handleExceptions, path, _}
 import akka.http.scaladsl.server.Route
-import com.github.makiftutuncu.trump.domain.{LimitValidator, TweetRepository}
+import com.github.makiftutuncu.trump.domain._
 import io.circe.syntax._
 
 import scala.concurrent.ExecutionContext
 
-class ShoutController(val limitValidator: LimitValidator,
+class ShoutController(val cache: Cache[List[Tweet]],
+                      val limitValidator: LimitValidator,
                       val tweetRepository: TweetRepository)(implicit as: ActorSystem,
                                                                      ec: ExecutionContext) extends Controller {
   override val route: Route =
@@ -31,9 +32,13 @@ class ShoutController(val limitValidator: LimitValidator,
         failWithError(error)
 
       case None =>
-        onSuccess(tweetRepository.getTweets(twitterUserName, limit)) {
+        val result = cache.use(twitterUserName)(tweetRepository.getTweets(twitterUserName, limit)) { tweets =>
+          MaybeF.value(tweets.asJson)
+        }
+
+        onSuccess(result) {
           case Left(error)   => failWithError(error)
-          case Right(tweets) => complete(tweets.map(_.asJson))
+          case Right(tweets) => complete(tweets)
         }
     }
   }

@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  trump:
+    container_name: trump-redis
+    image: redis:stretch
+    ports:
+      - 6379:6379

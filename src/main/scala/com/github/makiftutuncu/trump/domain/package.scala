@@ -1,6 +1,6 @@
 package com.github.makiftutuncu.trump
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 package object domain {
   type Maybe[A]  = Either[ShoutError, A]
@@ -23,5 +23,9 @@ package object domain {
     def error[A](e: ShoutError): MaybeF[A]   = Future.successful(Maybe.error(e))
     def value[A](a: A): MaybeF[A]            = Future.successful(Maybe.value(a))
     def maybe[A](maybe: Maybe[A]): MaybeF[A] = Future.successful(maybe)
+
+    def from[A](a: => A)(implicit ec: ExecutionContext): MaybeF[A] = fromFuture(Future(a))
+
+    def fromFuture[A](future: Future[A])(implicit ec: ExecutionContext): MaybeF[A] = future.map(Maybe.value)
   }
 }

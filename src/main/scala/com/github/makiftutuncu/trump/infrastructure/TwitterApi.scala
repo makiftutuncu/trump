@@ -16,7 +16,8 @@ import io.circe.{Decoder, Json}
 
 import scala.concurrent.ExecutionContext
 
-class TwitterApi(val config: Twitter)(implicit as: ActorSystem,
+class TwitterApi(val cache: Cache[String],
+                 val config: Twitter)(implicit as: ActorSystem,
                                                ec: ExecutionContext,
                                                m: Materializer) extends TweetRepository
                                                                    with FailFastCirceSupport
@@ -24,7 +25,7 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem,
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
     logger.debug(s"Going to try and get $limit tweets of user $username")
 
-    getAccessToken.flatMap {
+    cache.use("accessToken", config.accessTokenTTL)(getAccessToken)(at => MaybeF.value(at)).flatMap {
       case Left(error) =>
         MaybeF.error(error)
 
@@ -41,7 +42,8 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem,
           for {
             httpResponse <- Http().singleRequest(request)
             json         <- Unmarshal(httpResponse).to[Json]
-            _             = logger.debug(s"Got tweets response\n${json.noSpaces}")
+            _             = logger.debug("Got tweets response")
+            _             = logger.trace(json.noSpaces)
             tweets       <- MaybeF.maybe(parseTweets(json))
           } yield {
             tweets
@@ -69,7 +71,8 @@ class TwitterApi(val config: Twitter)(implicit as: ActorSystem,
       for {
         httpResponse <- Http().singleRequest(request)
         json         <- Unmarshal(httpResponse).to[Json]
-        _             = logger.debug(s"Got access token response\n${json.noSpaces}")
+        _             = logger.debug("Got access token response")
+        _             = logger.trace(json.noSpaces)
         maybeToken   <- MaybeF.maybe(parse[String](json, "access_token", "Cannot parse access token!"))
       } yield {
         maybeToken

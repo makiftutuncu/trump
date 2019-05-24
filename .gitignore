@@ -3,6 +3,7 @@ secret.conf
 ### Scala template
 *.class
 *.log
+.hydra
 
 # sbt specific
 .cache

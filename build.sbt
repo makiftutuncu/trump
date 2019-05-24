@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.0",
   "de.heikoseeberger"          %% "akka-http-circe" % "1.25.2",
   "io.circe"                   %% "circe-core"      % "0.10.0",
+  "io.circe"                   %% "circe-parser"    % "0.10.0",
+  "net.debasishg"              %% "redisclient"     % "3.9",
   "org.scalacheck"             %% "scalacheck"      % "1.14.0"  % "test",
   "org.scalatest"              %% "scalatest"       % "3.0.5"   % "test"
 )
