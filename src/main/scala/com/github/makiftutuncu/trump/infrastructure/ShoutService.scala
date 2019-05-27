@@ -22,7 +22,7 @@ class ShoutService(val cache: Cache[List[Tweet]],
         MaybeF.error(error)
 
       case None =>
-        cache.use(twitterUserName)(tweetRepository.getTweets(twitterUserName, limitValidator.limits.max)) { tweets =>
+        cache.use(twitterUserName)(tweetRepository.getTweets(twitterUserName, limitValidator.limits.max))(_.asJson.noSpaces) { tweets =>
           MaybeF.value(tweets.take(limit).asJson)
         }
     }

@@ -26,7 +26,7 @@ class TwitterApi(val cache: Cache[String],
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
     logger.debug(s"Going to try and get $limit tweets of user $username")
 
-    cache.use("accessToken", config.accessTokenTTL)(getAccessToken)(at => MaybeF.value(at)).flatMap {
+    cache.use("accessToken", config.accessTokenTTL)(getAccessToken)(identity)(at => MaybeF.value(at)).flatMap {
       case Left(error) =>
         MaybeF.error(error)
 
