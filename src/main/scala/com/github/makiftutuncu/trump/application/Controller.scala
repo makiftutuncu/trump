@@ -35,10 +35,7 @@ abstract class Controller(implicit as: ActorSystem, ec: ExecutionContext) extend
     complete {
       HttpResponse(
         error.code,
-        entity = Chunked(
-          ContentTypes.`application/json`,
-          Source.single(error.asJson.noSpaces).map(ChunkStreamPart.apply)
-        )
+        entity = Chunked(ContentTypes.`application/json`, Source.single(error.asJson.noSpaces).map(ChunkStreamPart.apply))
       )
     }
 }

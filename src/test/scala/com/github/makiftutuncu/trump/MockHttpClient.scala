@@ -13,12 +13,7 @@ class MockHttpClient(responses: Json*) extends HttpClient {
 
   override def sendRequest(request: HttpRequest): Future[HttpResponse] =
     if (i < responses.size) {
-      val response = HttpResponse(
-         entity = Chunked(
-          ContentTypes.`application/json`,
-          Source.single(responses(i).noSpaces).map(ChunkStreamPart.apply)
-        )
-      )
+      val response = HttpResponse(entity = Chunked(ContentTypes.`application/json`, Source.single(responses(i).noSpaces).map(ChunkStreamPart.apply)))
       i += 1
       Future.successful(response)
     } else {
