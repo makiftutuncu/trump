@@ -1,6 +1,6 @@
 package com.github.makiftutuncu.scalacandidatetest.infrastructure
 
-import com.github.makiftutuncu.scalacandidatetest.Config.{Cache => CacheConfig}
+import com.github.makiftutuncu.scalacandidatetest.Config.{Redis => RedisConfig}
 import com.github.makiftutuncu.scalacandidatetest.domain.Cache
 import com.github.makiftutuncu.scalacandidatetest.domain.models.{MaybeF, Tweet}
 import com.redis.serialization.Parse
@@ -9,7 +9,7 @@ import io.circe.parser.parse
 
 import scala.concurrent.ExecutionContext
 
-class Redis[A](val config: CacheConfig, val redis: () => RedisClient)(implicit ec: ExecutionContext, p: Parse[A]) extends Cache[A] {
+class Redis[A](val config: RedisConfig, val redis: () => RedisClient)(implicit ec: ExecutionContext, p: Parse[A]) extends Cache[A] {
   override val isEnabled: Boolean       = config.enabled
   override val defaultTTLInSeconds: Int = config.ttl
 

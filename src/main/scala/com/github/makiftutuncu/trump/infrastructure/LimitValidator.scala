@@ -7,7 +7,7 @@ import com.github.makiftutuncu.scalacandidatetest.domain.models.{Errors, ShoutEr
 class LimitValidator(val limits: Limits) extends Validator[Int] {
   override def validate(limit: Int): Option[ShoutError] =
     if (limit < limits.min || limit > limits.max) {
-      Some(Errors.invalidLimit(limit))
+      Some(Errors.invalidLimit(limit, limits.min, limits.max))
     } else {
       None
     }

@@ -1,39 +1,99 @@
-# Trump Tech Test 
+# Trump
 
-## Description
-We want you to implement a REST API that, given a twitter username and a count N, returns the last N tweets shouted. Shouting a tweet consists of transforming it to uppercase and adding an exclamation mark at the end. We also want to get a cache layer of these tweets in order to avoid hitting Twitter's API (which let's imagine is very expensive) twice for the same username given a T time.
+## Table of Contents
 
-## Example 
+1. [Introduction](#introduction)
+2. [Configuration](#configuration)
+3. [Development](#development)
+4. [Testing](#testing)
+5. [API](#api)
+6. [Notes](#notes)
 
-Given these last two tweets from Donald Trump:
-- "Big announcement with my friend Ambassador Nikki Haley in the Oval Office at 10:30am",
-- "Will be going to Iowa tonight for Rally, and more! The Farmers (and all) are very happy with USMCA!"
+## Introduction
 
-The returned response should be:
+Trump is an API written in Scala with Akka Http and backed by Redis cache. It is for "shouting out" recent tweets from a Twitter account.
+
+## Configuration
+
+Trump can be configured via [application.conf](src/main/resources/application.conf) and [test.conf](src/test/resources/test.conf) files for running and testing respectively. You can also override config values with following environment variables.
+
+| Variable Name            | Data Type | Description                                       | Required                    |
+| ------------------------ | --------- | ------------------------------------------------- | --------------------------- |
+| PORT                     | Int       | Running port of Trump                             | No, defaults to `9000`      |
+| REDIS_ENABLED            | Boolean   | Switch to enable Redis                            | No, defaults to `true`      |
+| REDIS_HOST               | String    | Host of Redis                                     | No, defaults to `localhost` |
+| REDIS_PORT               | Int       | Port of Redis                                     | No, defaults to `6379`      |
+| REDIS_TTL                | Int       | Default time-to-live in seconds for Redis entries | No, defaults to `300`       |
+| TWITTER_ACCESS_TOKEN_TTL | Int       | Time-to-live for Twitter access key in seconds    | No, defaults to `3600`      |
+| TWITTER_API_KEY          | String    | API key for Twitter APIs                          | Yes, unless mock is enabled |
+| TWITTER_API_SECRET       | String    | API secret for Twitter APIs                       | Yes, unless mock is enabled |
+| TWITTER_MOCK             | Boolean   | Switch to mock Twitter APIs                       | No, defaults to `false`     |
+
+API key and secret values can also be provided by creating a [secret.conf](src/main/resources/secret.conf) which is gitignored by default.
+
+## Development and Running
+
+Trump is built with SBT. So, standard SBT tasks like `clean`, `compile` and `run` can be used.
+
+In order to get the Redis set up, you may simply use `docker-compose` by doing
+
+```docker-compose up -d```
+
+This will fire up a Redis cache for running the application.
+
+## Testing
+
+To run all the tests, use `test` task of SBT.
+
+To run specific test(s), use `testOnly fullyQualifiedTestClassName1 fullyQualifiedTestClassName2 ...`
+
+## API
+
+Here is an overview of the APIs:
+
+| Method | URL                             | Link                                 |
+| ------ | ------------------------------- | ------------------------------------ |
+| GET    | /shout/`username`?limit=`limit` | [Jump](#get-shoutusernamelimitlimit) |
+
+All handled errors return an error Json in following format:
+
+```json
+{
+  "error": "some-error-type",
+  "details": "A human readable description of the error"
+}
 ```
-curl -s http://oursuperawesometwittershoutapi.com/shout/realDonaldTrump?limit=2
+
+with a corresponding HTTP status code depending on the error.
+
+All successful responses will have `200 OK` status unless explicitly mentioned.
+
+---
+
+### GET /shout/`username`?limit=`limit`
+
+Returns a list of shouted tweets of user `username` Json array limited to `limit`
+
+#### Example Successful Response
+
+```json
 [
-    "BIG ANNOUNCEMENT WITH MY FRIEND AMBASSADOR NIKKI HALEY IN THE OVAL OFFICE AT 10:30AM!",
-    "WILL BE GOING TO IOWA TONIGHT FOR RALLY, AND MORE! THE FARMERS (AND ALL) ARE VERY HAPPY WITH USMCA!"
+  "COOKIE 😻 #KEDI #CAT HTTPS://T.CO/BOZULKJEK6 HTTPS://T.CO/OM817MBLED!",
+  "@SELCUKERMAYA EN AZINDAN ZSH KULLANIYOR. ÇOK DA ŞEY YAPMAMAK LAZIM. 😄!",
+  "@THUSEYINSAHIN DÜN YAŞADIM BEN DE. HALA ÇOK IYI DEĞILIM. GEÇMIŞ OLSUN!",
+  "I'M AT ETIKET KEBAP IN OSMANGAZI, BURSA HTTPS://T.CO/02067VPNK1!",
+  "THE BIG BANG THEORY FINALI ÇOK GÜZEL OLMUŞ. DARISI GAME OF THRONES'UN BAŞINA!"
 ]
 ```
 
-## Constraints 
-- Count N provided MUST be equal or less than 10. If not, our API should return an error.
+#### Possible Errors
 
-## Code Provided
-In order to get you started, we've provided some bootstrap code.
-- `ShoutController` and `Starter`: Web server done in Akka HTTP.
-- `TweetRepository` and `TweetRepositoryInMemory`: We want you to work on domain code. Therefore, we provide an in-memory implementation of the Twitter repository that returns random quotes about science 🧐. You don't need to implement real communication with Twitter, you can use `TwitterRepositoryInMemory` as a production implementation.
-- `Tweet` domain model: Simple case class for modeling Tweets returned by `TweetRepository`.
+| What               | When                                   |
+| ------------------ | -------------------------------------- |
+| Invalid Limit      | Limit is not between configured values |
+| Twitter Connection | An error occurs with Twitter APIs      |
 
-You can run the webserver by running `runMain com.github.makiftutuncu.scalacandidatetest.Starter` inside the sbt console. By default it runs on port 9000.
+## Notes
 
-![hello-world](/doc/img/helloworld.png)
-
-Feel free to change any of the provided code or do it by yourself if you feel more comfortable.
-
-## What will we evaluate?
-* **Design:** We know this is a very simple application and can be solved with one line of code but we want to see how you design domain code. Let's pretend this is a super critical application for the company and you're going to maintain it (and make changes requested by the product owner) for years.
-* **Testing:** We love automated testing and we love reliable tests. We like testing for two reasons: First, good tests let us deploy to production without fear (even on a Friday!). Second, tests give a fast feedback cycle so developers in dev phase know if their changes are breaking anything.
-* **Simplicity**: We like separate code in domain, application and infrastructure layers. If our product owner asks us for the same application but accessed by command line (instead of the http server) it should be super easy!
+* It only works with public accounts. If an account is locked, the result will be empty.
+* Capitalizing does not handle all types of tweets well, especially tweets with links and emojis.

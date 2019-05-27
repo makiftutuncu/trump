@@ -10,7 +10,7 @@ import scala.concurrent.duration.Duration
 class ShoutServiceSpec extends WordSpec with MustMatchers with Components {
   "Shouting tweets" must {
     "fail when limit is invalid" in {
-      Await.result(shoutService.shoutForUser("test", 42), Duration.Inf) must be(Maybe.error(Errors.invalidLimit(42)))
+      Await.result(shoutService.shoutForUser("test", 42), Duration.Inf) must be(Maybe.error(Errors.invalidLimit(42, limitValidator.limits.min, limitValidator.limits.max)))
     }
 
     "fail when getting tweets fails" in {

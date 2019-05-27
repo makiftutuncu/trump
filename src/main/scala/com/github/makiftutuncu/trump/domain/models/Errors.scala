@@ -3,11 +3,11 @@ package com.github.makiftutuncu.scalacandidatetest.domain.models
 import akka.http.scaladsl.model.StatusCodes
 
 object Errors {
-  def invalidLimit(n: Int): ShoutError =
+  def invalidLimit(n: Int, min: Int, max: Int): ShoutError =
     ShoutError(
       StatusCodes.BadRequest.intValue,
       "invalid-limit",
-      s"Limit $n is invalid. It must be between 1 and 10."
+      s"Limit $n is invalid. It must be between $min and $max."
     )
 
   val unknown: ShoutError =
