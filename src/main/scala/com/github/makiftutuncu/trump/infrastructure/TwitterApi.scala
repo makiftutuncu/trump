@@ -1,7 +1,6 @@
 package com.github.makiftutuncu.scalacandidatetest.infrastructure
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OAuth2BearerToken}
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, Uri}
@@ -18,11 +17,12 @@ import io.circe.{Decoder, Json}
 import scala.concurrent.ExecutionContext
 
 class TwitterApi(val cache: Cache[String],
-                 val config: Twitter)(implicit as: ActorSystem,
-                                               ec: ExecutionContext,
-                                               m: Materializer) extends TweetRepository
-                                                                   with FailFastCirceSupport
-                                                                   with StrictLogging {
+                 val config: Twitter,
+                 val httpClient: HttpClient)(implicit as: ActorSystem,
+                                                      ec: ExecutionContext,
+                                                       m: Materializer) extends TweetRepository
+                                                                           with FailFastCirceSupport
+                                                                           with StrictLogging {
   override def getTweets(username: String, limit: Int): MaybeF[List[Tweet]] = {
     logger.debug(s"Going to try and get $limit tweets of user $username")
 
@@ -41,7 +41,7 @@ class TwitterApi(val cache: Cache[String],
 
         val result =
           for {
-            httpResponse <- Http().singleRequest(request)
+            httpResponse <- httpClient.sendRequest(request)
             json         <- Unmarshal(httpResponse).to[Json]
             _             = logger.debug("Got tweets response")
             _             = logger.trace(json.noSpaces)
@@ -58,7 +58,7 @@ class TwitterApi(val cache: Cache[String],
     }
   }
 
-  private def getAccessToken: MaybeF[String] = {
+  protected[infrastructure] def getAccessToken: MaybeF[String] = {
     logger.debug("Going to get an access token")
 
     val request =
@@ -70,7 +70,7 @@ class TwitterApi(val cache: Cache[String],
 
     val result =
       for {
-        httpResponse <- Http().singleRequest(request)
+        httpResponse <- httpClient.sendRequest(request)
         json         <- Unmarshal(httpResponse).to[Json]
         _             = logger.debug("Got access token response")
         _             = logger.trace(json.noSpaces)
