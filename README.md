@@ -4,7 +4,7 @@
 
 1. [Introduction](#introduction)
 2. [Configuration](#configuration)
-3. [Development](#development)
+3. [Development and Running](#development-and-running)
 4. [Testing](#testing)
 5. [API](#api)
 6. [Notes](#notes)
@@ -72,7 +72,7 @@ All successful responses will have `200 OK` status unless explicitly mentioned.
 
 ### GET /shout/`username`?limit=`limit`
 
-Returns a list of shouted tweets of user `username` Json array limited to `limit`
+Returns a list of shouted tweets of user `username` as a Json array limited to `limit` items
 
 #### Example Successful Response
 
