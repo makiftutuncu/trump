@@ -22,6 +22,6 @@ class MockHttpClient(responses: Json*) extends HttpClient {
       i += 1
       Future.successful(response)
     } else {
-      throw new Exception(s"Http client is called more than ${responses.size} times, incorrect mocks?")
+      Future.failed(new Exception(s"Http client is called more than ${responses.size} times, incorrect mocks?"))
     }
 }

@@ -19,8 +19,8 @@ trait Components {
 
   lazy val redis: RedisClient = new RedisClient(config.cache.host, config.cache.port)
 
-  lazy val accessTokenCache: Cache[String] = new Redis[String](config.cache, redis)
-  lazy val tweetCache: Cache[List[Tweet]]  = new Redis[List[Tweet]](config.cache, redis)(executionContext, Redis.tweetParse)
+  lazy val accessTokenCache: Cache[String] = new Redis[String](config.cache, () => redis)
+  lazy val tweetCache: Cache[List[Tweet]]  = new Redis[List[Tweet]](config.cache, () => redis)(executionContext, Redis.tweetParse)
 
   lazy val limitValidator: LimitValidator = new LimitValidator(config.limits)
 

@@ -9,20 +9,20 @@ import io.circe.parser.parse
 
 import scala.concurrent.ExecutionContext
 
-class Redis[A](val config: CacheConfig, val redis: RedisClient)(implicit ec: ExecutionContext, p: Parse[A]) extends Cache[A] {
+class Redis[A](val config: CacheConfig, val redis: () => RedisClient)(implicit ec: ExecutionContext, p: Parse[A]) extends Cache[A] {
   override val isEnabled: Boolean       = config.enabled
   override val defaultTTLInSeconds: Int = config.ttl
 
   override protected def internalGet(key: String): MaybeF[Option[A]] =
     MaybeF.from {
       logger.debug(s"Getting key $key from Redis")
-      redis.get[A](key)
+      redis().get[A](key)
     }
 
   override protected def internalSet(key: String, value: String, ttl: Int): MaybeF[Unit] =
     MaybeF.from {
       logger.debug(s"Setting key $key to Redis")
-      redis.set(key, value, onlyIfExists = false, Seconds(ttl))
+      redis().set(key, value, onlyIfExists = false, Seconds(ttl))
     }
 }
 
