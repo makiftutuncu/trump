@@ -1,4 +1,4 @@
-package com.github.makiftutuncu.scalacandidatetest.domain.models
+package com.github.makiftutuncu.trump.domain.models
 
 import io.circe.Json
 import io.circe.syntax._

@@ -1,9 +1,9 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import com.github.makiftutuncu.scalacandidatetest.domain.HttpClient
+import com.github.makiftutuncu.trump.domain.HttpClient
 
 import scala.concurrent.Future
 

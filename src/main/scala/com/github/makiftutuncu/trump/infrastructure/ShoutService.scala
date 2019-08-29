@@ -1,8 +1,8 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
 import akka.actor.ActorSystem
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{MaybeF, Tweet}
-import com.github.makiftutuncu.scalacandidatetest.domain.{Cache, TweetRepository}
+import com.github.makiftutuncu.trump.domain.models.{MaybeF, Tweet}
+import com.github.makiftutuncu.trump.domain.{Cache, TweetRepository}
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Json
 import io.circe.syntax._

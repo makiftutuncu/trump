@@ -1,7 +1,7 @@
-package com.github.makiftutuncu.scalacandidatetest
+package com.github.makiftutuncu.trump
 
-import com.github.makiftutuncu.scalacandidatetest.domain.Cache
-import com.github.makiftutuncu.scalacandidatetest.domain.models.MaybeF
+import com.github.makiftutuncu.trump.domain.Cache
+import com.github.makiftutuncu.trump.domain.models.MaybeF
 
 class MockCache(val now: Long = System.currentTimeMillis,
                 override val isEnabled: Boolean = true,

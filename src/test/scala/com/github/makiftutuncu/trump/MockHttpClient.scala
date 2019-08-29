@@ -1,9 +1,9 @@
-package com.github.makiftutuncu.scalacandidatetest
+package com.github.makiftutuncu.trump
 
 import akka.http.scaladsl.model.HttpEntity.{ChunkStreamPart, Chunked}
 import akka.http.scaladsl.model.{ContentTypes, HttpRequest, HttpResponse}
 import akka.stream.scaladsl.Source
-import com.github.makiftutuncu.scalacandidatetest.domain.HttpClient
+import com.github.makiftutuncu.trump.domain.HttpClient
 import io.circe.Json
 
 import scala.concurrent.Future

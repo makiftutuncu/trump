@@ -1,6 +1,6 @@
-package com.github.makiftutuncu.scalacandidatetest.domain
+package com.github.makiftutuncu.trump.domain
 
-import com.github.makiftutuncu.scalacandidatetest.domain.models.MaybeF
+import com.github.makiftutuncu.trump.domain.models.MaybeF
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.ExecutionContext

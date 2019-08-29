@@ -1,10 +1,10 @@
-package com.github.makiftutuncu.scalacandidatetest
+package com.github.makiftutuncu.trump
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.github.makiftutuncu.scalacandidatetest.domain.models.Tweet
-import com.github.makiftutuncu.scalacandidatetest.domain.{Cache, HttpClient, TweetRepository}
-import com.github.makiftutuncu.scalacandidatetest.infrastructure._
+import com.github.makiftutuncu.trump.domain.models.Tweet
+import com.github.makiftutuncu.trump.domain.{Cache, HttpClient, TweetRepository}
+import com.github.makiftutuncu.trump.infrastructure._
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 

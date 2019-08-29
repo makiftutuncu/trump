@@ -1,8 +1,8 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
-import com.github.makiftutuncu.scalacandidatetest.Config.Limits
-import com.github.makiftutuncu.scalacandidatetest.domain.Validator
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{Errors, ShoutError}
+import com.github.makiftutuncu.trump.Config.Limits
+import com.github.makiftutuncu.trump.domain.Validator
+import com.github.makiftutuncu.trump.domain.models.{Errors, ShoutError}
 
 class LimitValidator(val limits: Limits) extends Validator[Int] {
   override def validate(limit: Int): Option[ShoutError] =

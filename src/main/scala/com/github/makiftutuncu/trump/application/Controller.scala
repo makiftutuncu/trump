@@ -1,4 +1,4 @@
-package com.github.makiftutuncu.scalacandidatetest.application
+package com.github.makiftutuncu.trump.application
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.marshalling.ToResponseMarshaller
@@ -8,7 +8,7 @@ import akka.http.scaladsl.server.Directives.complete
 import akka.http.scaladsl.server.directives.FutureDirectives
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.stream.scaladsl.Source
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{Errors, MaybeF, ShoutError}
+import com.github.makiftutuncu.trump.domain.models.{Errors, MaybeF, ShoutError}
 import com.typesafe.scalalogging.StrictLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.syntax._

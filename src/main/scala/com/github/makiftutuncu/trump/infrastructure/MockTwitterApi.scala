@@ -1,7 +1,7 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
-import com.github.makiftutuncu.scalacandidatetest.domain.TweetRepository
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{MaybeF, Tweet}
+import com.github.makiftutuncu.trump.domain.TweetRepository
+import com.github.makiftutuncu.trump.domain.models.{MaybeF, Tweet}
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.concurrent.ExecutionContext

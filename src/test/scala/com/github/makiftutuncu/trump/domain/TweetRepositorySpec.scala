@@ -1,6 +1,6 @@
-package com.github.makiftutuncu.scalacandidatetest.domain
+package com.github.makiftutuncu.trump.domain
 
-import com.github.makiftutuncu.scalacandidatetest.Components
+import com.github.makiftutuncu.trump.Components
 import org.scalatest.{MustMatchers, WordSpec}
 
 import scala.concurrent.Await

@@ -1,8 +1,8 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
-import com.github.makiftutuncu.scalacandidatetest.Config.{Redis => RedisConfig}
-import com.github.makiftutuncu.scalacandidatetest.domain.Cache
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{MaybeF, Tweet}
+import com.github.makiftutuncu.trump.Config.{Redis => RedisConfig}
+import com.github.makiftutuncu.trump.domain.Cache
+import com.github.makiftutuncu.trump.domain.models.{MaybeF, Tweet}
 import com.redis.serialization.Parse
 import com.redis.{RedisClient, Seconds}
 import io.circe.parser.parse

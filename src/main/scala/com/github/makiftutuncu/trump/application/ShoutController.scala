@@ -1,9 +1,9 @@
-package com.github.makiftutuncu.scalacandidatetest.application
+package com.github.makiftutuncu.trump.application
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives.{get, handleExceptions, path, _}
 import akka.http.scaladsl.server.Route
-import com.github.makiftutuncu.scalacandidatetest.infrastructure.ShoutService
+import com.github.makiftutuncu.trump.infrastructure.ShoutService
 
 import scala.concurrent.ExecutionContext
 

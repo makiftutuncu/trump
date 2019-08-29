@@ -1,7 +1,7 @@
-package com.github.makiftutuncu.scalacandidatetest.domain
+package com.github.makiftutuncu.trump.domain
 
-import com.github.makiftutuncu.scalacandidatetest.MockCache
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{Maybe, MaybeF}
+import com.github.makiftutuncu.trump.MockCache
+import com.github.makiftutuncu.trump.domain.models.{Maybe, MaybeF}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 
 import scala.concurrent.Await

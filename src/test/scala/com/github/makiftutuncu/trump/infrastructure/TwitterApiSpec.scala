@@ -1,7 +1,7 @@
-package com.github.makiftutuncu.scalacandidatetest.infrastructure
+package com.github.makiftutuncu.trump.infrastructure
 
-import com.github.makiftutuncu.scalacandidatetest.domain.models.{Errors, Maybe, Tweet}
-import com.github.makiftutuncu.scalacandidatetest.{Components, MockCache, MockHttpClient}
+import com.github.makiftutuncu.trump.domain.models.{Errors, Maybe, Tweet}
+import com.github.makiftutuncu.trump.{Components, MockCache, MockHttpClient}
 import io.circe.Json
 import io.circe.syntax._
 import org.scalatest.{MustMatchers, WordSpec}

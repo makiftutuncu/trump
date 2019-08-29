@@ -1,6 +1,6 @@
-package com.github.makiftutuncu.scalacandidatetest.domain
+package com.github.makiftutuncu.trump.domain
 
-import com.github.makiftutuncu.scalacandidatetest.domain.models.ShoutError
+import com.github.makiftutuncu.trump.domain.models.ShoutError
 
 trait Validator[A] {
   def validate(a: A): Option[ShoutError]

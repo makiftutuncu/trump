@@ -1,4 +1,4 @@
-package com.github.makiftutuncu.scalacandidatetest.domain
+package com.github.makiftutuncu.trump.domain
 
 import scala.concurrent.{ExecutionContext, Future}
 
